@@ -7,13 +7,72 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sono:wght@400;700&display=swap" rel="stylesheet">
   <style>
+
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
     body {
       font-family: 'Sono', sans-serif;
     }
 
+    .pricing-container {
+      display: flex;
+      gap: 2rem;
+
+      /*这个是设置容器的，可以让align-items生效*/
+      height: 100vh;
+
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pricing-plan {
+      flex:1;
+      max-width: 400px; 
+
+      padding: 1.5rem;
+      background-color: #f2f2f2;
+      text-align: center;
+      border-radius: 5px; 
+    }
+
+    .plan-title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .plan-price {
+      font-weight: bold;
+      font-size: 48px;
+    }
+
+    .plan-features {
+      list-style: none;
+    }
+
+    .plan-features > li {
+      margin-bottom: 20px;
+    }
+
+
+    .plan-button {
+      background-color: #ff6600;
+      color: #f2f2f2;
+      font-size: 12px;
+      padding: 10px 8px;
+      border-radius: 6px;
+      border: none;
+    }
+
     /* Hint: What can you do with a media query and flexbox? */
     @media (max-width: 1250px) {
-      
+      .pricing-container {
+        flex-direction: column;
+        height: 100%;
+        margin-top: 20px;
+      }
     }
   </style>
 </head>
