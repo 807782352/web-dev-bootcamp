@@ -19,11 +19,89 @@
     HINT: Remember you can't change the properties of grid lines.
     But grid lines are transparent!
     */
+
+    body {
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      height: 100vh;
+      align-items: center;
+    }
+
+    .grid-container {
+      width: 748px;
+      height: 748px;
+
+      background-color: black;
+      display: grid;
+      grid-template-columns: 320px 198px 153px 50px;
+      grid-template-rows: 414px 130px 155px 22px;
+      gap: 9px;
+      
+    }
+
+    .red {
+      background-color: #E72F24;
+    }
+
+    .grey {
+      background-color: #F0F1EC;
+    }
+
+    .blue {
+      background-color: #004592;
+    }
+
+    .black {
+      background-color: #232629;
+    }
+
+    .yellow{ 
+      background-color: #F9D01E;
+    }
+
+    #cell-2 {
+      grid-column: 2 / -1;
+    }
+
+    #cell-3 {
+      grid-row: 2 / span 2;
+    }
+
+    #cell-4 {
+      grid-row: 2 / span 2;
+      grid-column: 2 / span 2;
+    }
+
+    #cell-5 {
+      border-bottom: 10px solid #000;
+    }
+
+    #cell-7 {
+      grid-row: 3 / -1;
+    }
+
+    
+    
+
   </style>
 </head>
 
 <body>
   <!-- Write your HTML here -->
+  <div class="grid-container">
+    <div class="red" id="cell-1"></div>
+    <div class="grey" id="cell-2"></div>
+    <div class="grey" id="cell-3"></div>
+    <div class="grey" id="cell-4"></div>
+    <div class="blue" id="cell-5"></div>
+    <!-- <div class="black" id="cell-6"></div> -->
+    <div class="grey" id="cell-7"></div>
+    <div class="grey" id="cell-8"></div>
+    <div class="yellow" id="cell-9"></div>
+    <div class="black" id="cell-10"></div>
+  </div>
 </body>
 
 </html>
