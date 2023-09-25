@@ -1,5 +1,7 @@
 const gamePattern = [];
 
+const userClickedPattern = [];
+
 const buttonColours = ["red", "blue", "green", "yellow"];
 
 function nextSequence() {
@@ -11,4 +13,10 @@ function nextSequence() {
     music.play();
 }
 
-
+$(".btn").on("click", function(){
+    // 哪个btn被点击，这个this就指向哪个btn 元素
+    // console.log(this);
+    var userChosenColour = this.id;
+    userClickedPattern.push(userChosenColour);
+    console.log(userClickedPattern);
+})
