@@ -1,4 +1,4 @@
-const gamePattern = [];
+var gamePattern = [];
 
 var level = 0;
 
@@ -8,6 +8,7 @@ var userClickedPattern = [];
 
 const buttonColours = ["red", "blue", "green", "yellow"];
 
+/** Event Listener */
 $(".btn").on("click", function(){
     var userChosenColour = this.id;
     userClickedPattern.push(userChosenColour);
@@ -16,6 +17,8 @@ $(".btn").on("click", function(){
 
     // check the current level
     checkAnswer(userClickedPattern.length-1);
+
+    startOver();
 })
 
 $(document).keypress(function(){
@@ -27,6 +30,13 @@ $(document).keypress(function(){
     }
 });
 
+
+/** Functions */
+function startOver() {
+    level = 0;
+    gamePattern = [];
+    started = false;
+}
 
 function checkAnswer(currentLevel){
     if (gamePattern[currentLevel] === userClickedPattern[currentLevel]){
