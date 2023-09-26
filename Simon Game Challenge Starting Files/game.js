@@ -9,13 +9,12 @@ var userClickedPattern = [];
 const buttonColours = ["red", "blue", "green", "yellow"];
 
 $(".btn").on("click", function(){
-    // console.log(this);
     var userChosenColour = this.id;
     userClickedPattern.push(userChosenColour);
     playSound(userChosenColour);
-    // console.log(userChosenColour);
     animatePress(userChosenColour);
 
+    // check the current level
     checkAnswer(userClickedPattern.length-1);
 })
 
@@ -40,6 +39,14 @@ function checkAnswer(currentLevel){
         }
     } else {
         console.log("wrong");
+        var errMusic = new Audio("./sounds/wrong.mp3");
+        errMusic.play();
+
+        $("body").addClass("game-over");
+        setTimeout(() => {
+            $("body").removeClass("game-over");
+        }, 200);
+        $("h1").text("Game Over, Press Any Key to Restart");
     }
 }
 
