@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Condition</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <link rel="stylesheet" href="styles/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Weather Condition</h1>
+
+      <div class="search">
+        <span>Please Tell Me Your Location: </span>
+        <form id="weather-form" method="post">
+          <span>Latitude: decimal (−90; 90) </span
+          ><input type="text" id="lat" name="lat" value="43.6534817" />
+          <br />
+          <span>Longitude: decimal (−180; 180) </span>
+          <input type="text" id="lon" name="lon" value="-79.362667" />
+          <br />
+          <input type="submit" value="submit" formaction="/loc" />
+          <input type="reset" value="reset" />
+        </form>
+      </div>
+
+      <% if (locals.info) { %>
+      <div class="weather">
+        <div class="location">
+          <h2><%= info.name %>, <%= info.country %></h2>
+        </div>
+        <div class="weather-info">
+          <ul>
+            <li class="lg"><%= info.temp %> °C</li>
+            <li>
+              <img src= <%=
+              `https://openweathermap.org/img/wn/${info.icon}@2x.png` %>
+              alt="weather icon">
+            </li>
+            <li class="md"><%= info.weatherDesc %></li>
+          </ul>
+        </div>
+        <div class="basic-info">
+          <ul>
+            <li class="sm">
+              <span class="icon material-symbols-outlined"> air </span>
+              <span><%= info.windSpeed %></span>
+            </li>
+            <li class="sm">
+              <span class="icon material-symbols-outlined">
+                humidity_percentage
+              </span>
+              <span><%= info.humidity %> %</span>
+            </li>
+            <li class="sm">
+              <span class="icon material-symbols-outlined"> cloud </span>
+              <span><%= info.cloudiness %> %</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="forecast">
+          <ul>
+            <% for (let i = 0; i < 5; i++) {%>
+            <li>
+              <ul>
+                <li><%= info.list[i].dt_txt %></li>
+                <li>
+                  <img src=<%=
+                  `https://openweathermap.org/img/wn/${info.list[i].weather[0].icon}@2x.png`
+                  %> alt="weather icon"> 
+                </li>
+                <li><%= info.list[i].main.temp %>°C</li>
+              </ul>
+            </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </body>
+</html>
