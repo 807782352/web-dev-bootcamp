@@ -65,6 +65,34 @@ app.put("/jokes/:id", (req, res) => {
 });
 
 //6. PATCH a joke
+app.patch("/jokes/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const { text, type } = req.body;
+
+  const existingJoke = jokes.find(joke => joke.id === id);
+  const updateIdx = jokes.findIndex((joke) => joke.id === id);
+
+  /*
+  可以这么写，但parameters多了就会很长，而下面的格式是更加efficient的写法
+  if (text) {
+    jokes[updateIdx].jokeText = text;
+  }
+
+  if (type) {
+    jokes[updateIdx].jokeType = type;
+  }
+  */
+  const updatedJoke = {
+    id,
+    jokeText: text || existingJoke.jokeText,
+    jokeType: type || existingJoke.jokeType,
+  };
+
+  jokes[updateIdx] = updatedJoke;
+
+  console.log(jokes[updateIdx]);
+  res.json(jokes[updateIdx]);
+});
 
 //7. DELETE Specific joke
 
