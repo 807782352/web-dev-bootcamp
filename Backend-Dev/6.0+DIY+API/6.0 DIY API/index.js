@@ -110,7 +110,9 @@ app.delete("/jokes/:id", (req, res) => {
 
 //8. DELETE All jokes
 app.delete("/all", (req, res) => {
-  const key = req.query.key;
+
+  // 可以用req.headers 或 req.query 【主要是看把API authorization 存放在哪】
+  const key = req.headers.key;
 
   if (key === masterKey) {
     jokes = [];
