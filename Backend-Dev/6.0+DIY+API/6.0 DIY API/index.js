@@ -29,15 +29,40 @@ app.get("/filter", (req, res) => {
 
 //4. POST a new joke
 app.post("/jokes", (req, res) => {
-  const {text, type} = req.body;
+  const { text, type } = req.body;
   const newId = jokes.length ? jokes.length + 1 : 1;
-  const newJoke = {newId, jokeText: text, jokeType: type};
+  const newJoke = { newId, jokeText: text, jokeType: type };
   jokes.push(newJoke);
-  console.log(jokes.slice(-1))
+  console.log(jokes.slice(-1));
   res.json(newJoke);
-})
+});
 
 //5. PUT a joke
+app.put("/jokes/:id", (req, res) => {
+  /**
+  const curIdx = req.params.id - 1;
+  const {text, type} = req.body;
+
+  jokes[curIdx].jokeText = text;
+  jokes[curIdx].jokeType = type;
+
+  console.log(jokes[curIdx]);
+  res.json(jokes[curIdx]);
+   */
+
+  // 更好的写法，最好是 在arr中找到index，而不是默认curIdx = id -1
+  const curId = parseInt(req.params.id);
+  const { text, type } = req.body;
+  const updatedJoke = {
+    id: curId,
+    jokeText: text,
+    jokeType: type,
+  };
+
+  const updateIdx = jokes.findIndex((joke) => joke.id === curId);
+  jokes[updateIdx] = updatedJoke;
+  res.json(updatedJoke);
+});
 
 //6. PATCH a joke
 
