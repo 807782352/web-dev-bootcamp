@@ -43,7 +43,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //CHALLENGE 1: GET All posts
 app.get("/posts", (req, res) => {
   res.json(posts);
-})
+});
 
 //CHALLENGE 2: GET a specific post by id
 app.get("/posts/:id", (req, res) => {
@@ -53,13 +53,13 @@ app.get("/posts/:id", (req, res) => {
   if (foundPost) {
     res.json(foundPost);
   } else {
-    res.status(404).json({error: `Not Found such post!`});
+    res.status(404).json({ error: `Not Found such post!` });
   }
-})
+});
 
 //CHALLENGE 3: POST a new post
 app.post("/posts", (req, res) => {
-  const {title, author, content} = req.body;
+  const { title, author, content } = req.body;
 
   const newId = lastId + 1;
   const newPost = {
@@ -68,17 +68,33 @@ app.post("/posts", (req, res) => {
     content,
     author,
     date: new Date(),
-  }
+  };
 
   posts.push(newPost);
 
   // check if newPost is inserted into the posts array
   console.log(posts.slice(-1));
   res.json(newPost);
-
-})
+});
 
 //CHALLENGE 4: PATCH a post when you just want to update one parameter
+app.patch("/posts/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+
+  const existingPost = posts.find((post) => id === post.id);
+
+  const updatedPost = {
+    id,
+    title: req.body.title || existingPost.title,
+    content: req.body.content || existingPost.content,
+    author: req.body.author || existingPost.author,
+    date: new Date(),
+  };
+
+  const updatedIdx = posts.findIndex((post) => id === post.id);
+  posts[updatedIdx] = updatedPost;
+  res.json(posts[updatedIdx]);
+});
 
 //CHALLENGE 5: DELETE a specific post by providing the post id.
 
