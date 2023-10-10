@@ -74,6 +74,9 @@ app.post("/posts", (req, res) => {
 
   // check if newPost is inserted into the posts array
   console.log(posts.slice(-1));
+
+  // fix a small bug 
+  lastId = newId;
   res.json(newPost);
 });
 
