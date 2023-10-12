@@ -28,28 +28,30 @@ async function main() {
   // A model is a class with which we construct documents.
   const Fruit = mongoose.model("Fruit", fruitSchema);
 
-  const fruit = new Fruit({
-    name: "Peach",
+  const apple = new Fruit({
+    name: "Apple",
     rating: 7,
     review: "Pretty solid as a fruit.",
   });
 
   //  Each document can be saved to the database by calling its save method.
-  // await fruit.save();
+  await apple.save();
 
-  //   const personSchema = new mongoose.Schema({
-  //     name: String,
-  //     age: Number,
-  //   });
+    const personSchema = new mongoose.Schema({
+      name: String,
+      age: Number,
+      favoriteFruit: fruitSchema,
+    });
 
-  //   const Person = mongoose.model("Person", personSchema);
+    const Person = mongoose.model("Person", personSchema);
 
-  //   const person = new Person({
-  //     name: "John",
-  //     age: 37,
-  //   });
+    const person = new Person({
+      name: "John",
+      age: 37,
+      favoriteFruit: apple,
+    });
 
-  //   person.save();
+    person.save();
 
   /** 多次添加fruits */
   const orange = new Fruit({
@@ -111,9 +113,9 @@ async function main() {
     }
   }
 
-  updateFruits();
-  deleteFruit();
-  deleteFruits();
+//   updateFruits();
+//   deleteFruit();
+//   deleteFruits();
   findFruits();
     
   
