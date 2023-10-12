@@ -12,8 +12,15 @@ async function main() {
 
   // With Mongoose, everything is derived from a Schema.
   const fruitSchema = new mongoose.Schema({
-    name: String,
-    rating: Number,
+    name: {
+      type: String,
+      required: [true, "Please check your data entry, no name specified!"],
+    },
+    rating: {
+      type: Number,
+      min: 1,
+      max: [10, "10 is the highest rating score"],
+    },
     review: String,
   });
 
@@ -22,13 +29,13 @@ async function main() {
   const Fruit = mongoose.model("Fruit", fruitSchema);
 
   const fruit = new Fruit({
-    name: "Apple",
+    name: "Peach",
     rating: 7,
     review: "Pretty solid as a fruit.",
   });
 
   //  Each document can be saved to the database by calling its save method.
-  //   await fruit.save();
+  // await fruit.save();
 
   //   const personSchema = new mongoose.Schema({
   //     name: String,
@@ -67,16 +74,47 @@ async function main() {
 
   async function findFruits() {
     try {
-      const fruits = await Fruit.find({ rating: { $gte: 4 } });
-      //   console.log(fruits);
-      
-      fruits.forEach((fruit) => console.log(fruit.name));
+      const fruits = await Fruit.find({});
+      console.log(fruits);
+
+      // const fruits = await Fruit.find({ rating: { $gte: 4 } });
+      //   fruits.forEach((fruit) => console.log(fruit.name));
     } catch (err) {
       console.log(err);
-    } finally {
-      mongoose.connection.close();
+    } 
+  }
+
+  async function updateFruits() {
+    try {
+    await Fruit.updateOne({ name: "Peach" }, { rating: 6 });
+      console.log("Update Successfully!");
+    } catch (err) {
+      console.log(err);
     }
   }
 
+  async function deleteFruit() {
+    try {
+      await Fruit.deleteOne({ name: "Strawberry" });
+      console.log("Delete Successfully!");
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function deleteFruits() {
+    try {
+      await Fruit.deleteMany({ rating: {$lt: 5} });
+      console.log("Delete Successfully!");
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  updateFruits();
+  deleteFruit();
+  deleteFruits();
   findFruits();
+    
+  
 }
