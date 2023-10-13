@@ -18,11 +18,18 @@ mongoose.connect(mongoURL + "todolistDB");
 // const items = ["Buy Food", "Cook Food", "Eat Food"];
 // const workItems = [];
 
-const itemsSchema = {
+const itemsSchema = new mongoose.Schema({
   name: String,
-};
+});
+
+const listSchema = new mongoose.Schema({
+  name: String,
+  items: [itemsSchema],
+});
 
 const Item = mongoose.model("Item", itemsSchema);
+
+const List = mongoose.model("Custom", listSchema);
 
 const item1 = new Item({
   name: "Buy Food",
@@ -38,10 +45,32 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
-async function initItems() {
+async function initItems(defaults) {
   try {
-    await Item.insertMany(defaultItems);
+    await Item.insertMany(defaults);
     console.log("Initialized items successfully!");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function initLists(listName) {
+  try {
+    const list = List({
+      name: listName,
+      items: defaultItems,
+    });
+
+    list.save();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function readListByName(name) {
+  try {
+    let lists = await List.findOne({ name });
+    return lists;
   } catch (error) {
     console.log(error);
   }
@@ -71,14 +100,29 @@ async function addItem(itemName) {
   }
 }
 
-async function deleteItemById(id) {
+async function deleteItemById(collection, id) {
   try {
-    await Item.findByIdAndRemove(id);
+    await collection.findByIdAndRemove(id);
     console.log("Delete an item successfully!");
   } catch (err) {
     console.log(err);
   }
 }
+
+app.get("/:custom", async function (req, res) {
+  const customName = req.params.custom;
+  console.log(customName);
+
+  const list = await readListByName(customName);
+
+  if (!list) {
+    await initLists(customName);
+    res.redirect("/" + customName);
+  } else {
+    // console.log(list);
+    res.render("list", { listTitle: list.name, newListItems: list.items });
+  }
+});
 
 app.get("/", async function (req, res) {
   const day = date.getDate();
@@ -98,26 +142,14 @@ app.post("/", async function (req, res) {
   await addItem(itemName);
 
   res.redirect("/");
-
-  // if (req.body.list === "Work") {
-  //   workItems.push(item);
-  //   res.redirect("/work");
-  // } else {
-  //   items.push(item);
-  //   res.redirect("/");
-  // }
 });
 
 app.post("/delete", async function (req, res) {
   const itemId = req.body.checkbox;
 
-  await deleteItemById(itemId);
+  await deleteItemById(Item, itemId);
 
   res.redirect("/");
-});
-
-app.get("/work", function (req, res) {
-  res.render("list", { listTitle: "Work List", newListItems: workItems });
 });
 
 app.get("/about", function (req, res) {
