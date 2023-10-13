@@ -138,10 +138,22 @@ app.get("/", async function (req, res) {
 
 app.post("/", async function (req, res) {
   const itemName = req.body.newItem;
+  const listName = req.body.list;
+  console.log(listName);
 
-  await addItem(itemName);
+  const day = date.getDate();
 
-  res.redirect("/");
+  if (listName === day) {
+    await addItem(itemName);
+    res.redirect("/");
+  } else {
+    const list = await readListByName(listName);
+    list.items.push({
+      name: itemName,
+    });
+    list.save();
+    res.redirect("/" + listName);
+  }
 });
 
 app.post("/delete", async function (req, res) {
