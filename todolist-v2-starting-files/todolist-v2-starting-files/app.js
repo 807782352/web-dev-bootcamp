@@ -45,6 +45,16 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
+function capitalize(str) {
+  if (!str){
+    return "";
+  } 
+
+  return str[0].toUpperCase() + str.slice(1).toLowerCase();
+}
+
+
+
 async function initItems(defaults) {
   try {
     await Item.insertMany(defaults);
@@ -79,7 +89,6 @@ async function readListByName(name) {
 async function readItems() {
   try {
     let items = await Item.find({});
-    // items.forEach((item) => console.log(item.name));
     return items;
   } catch (error) {
     console.log(error);
@@ -92,7 +101,6 @@ async function addItem(itemName) {
   });
 
   try {
-    // await Item.insertMany(item);
     item.save(); // 直接这么写也可以
     console.log("Add a new item successfully!");
   } catch (error) {
@@ -110,8 +118,8 @@ async function deleteItemById(collection, id) {
 }
 
 app.get("/:custom", async function (req, res) {
-  const customName = req.params.custom;
-  // console.log(customName);
+  let customName = req.params.custom;
+  customName = capitalize(customName);
 
   const list = await readListByName(customName);
 
@@ -119,7 +127,6 @@ app.get("/:custom", async function (req, res) {
     await initLists(customName);
     res.redirect("/" + customName);
   } else {
-    // console.log(list);
     res.render("list", { listTitle: list.name, newListItems: list.items });
   }
 });
