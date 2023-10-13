@@ -111,7 +111,7 @@ async function deleteItemById(collection, id) {
 
 app.get("/:custom", async function (req, res) {
   const customName = req.params.custom;
-  console.log(customName);
+  // console.log(customName);
 
   const list = await readListByName(customName);
 
@@ -158,10 +158,21 @@ app.post("/", async function (req, res) {
 
 app.post("/delete", async function (req, res) {
   const itemId = req.body.checkbox;
+  const listName = req.body.listName;
 
-  await deleteItemById(Item, itemId);
+  const day = date.getDate();
 
-  res.redirect("/");
+  if (listName === day) {
+    await deleteItemById(Item, itemId);
+    res.redirect("/");
+  } else {
+    const list = await readListByName(listName);
+    list.items.pull(itemId);
+    list.save();
+    res.redirect("/" + listName);
+  }
+
+  
 });
 
 app.get("/about", function (req, res) {
