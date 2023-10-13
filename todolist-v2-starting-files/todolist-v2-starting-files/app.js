@@ -50,7 +50,7 @@ async function initItems() {
 async function readItems() {
   try {
     let items = await Item.find({});
-    items.forEach((item) => console.log(item.name));
+    // items.forEach((item) => console.log(item.name));
     return items;
   } catch (error) {
     console.log(error);
@@ -58,16 +58,25 @@ async function readItems() {
 }
 
 async function addItem(itemName) {
-  const item = new Item ({
-    name: itemName
+  const item = new Item({
+    name: itemName,
   });
 
   try {
     // await Item.insertMany(item);
-    item.save();  // 直接这么写也可以
+    item.save(); // 直接这么写也可以
     console.log("Add a new item successfully!");
   } catch (error) {
     console.log(error);
+  }
+}
+
+async function deleteItemById(id) {
+  try {
+    await Item.findByIdAndRemove(id);
+    console.log("Delete an item successfully!");
+  } catch (err) {
+    console.log(err);
   }
 }
 
@@ -97,6 +106,14 @@ app.post("/", async function (req, res) {
   //   items.push(item);
   //   res.redirect("/");
   // }
+});
+
+app.post("/delete", async function (req, res) {
+  const itemId = req.body.checkbox;
+
+  await deleteItemById(itemId);
+
+  res.redirect("/");
 });
 
 app.get("/work", function (req, res) {
