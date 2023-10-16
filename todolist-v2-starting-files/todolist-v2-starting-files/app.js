@@ -6,13 +6,15 @@ const mongoose = require("mongoose");
 const date = require(__dirname + "/date.js");
 
 const app = express();
+const pwd = "abc123456";
 
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-const mongoURL = "mongodb://127.0.0.1:27017/";
+
+const mongoURL = `mongodb+srv://admin-ziyi:${pwd}@cluster0.50s2mud.mongodb.net/`;
 mongoose.connect(mongoURL + "todolistDB");
 
 // const items = ["Buy Food", "Cook Food", "Eat Food"];
@@ -136,7 +138,7 @@ app.get("/", async function (req, res) {
 
   const items = await readItems();
   if (items.length === 0) {
-    initItems();
+    await initItems(defaultItems);
     res.redirect("/");
   } else {
     res.render("list", { listTitle: day, newListItems: items });
