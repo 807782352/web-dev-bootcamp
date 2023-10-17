@@ -36,6 +36,7 @@ app.get("/register", function (req, res) {
   res.render("register");
 });
 
+/** Username and Plain Password only */
 app.post("/register", async function (req, res) {
   const { username, password } = req.body;
   const newUser = new User({
