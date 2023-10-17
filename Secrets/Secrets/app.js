@@ -1,4 +1,5 @@
 //jshint esversion:6
+import 'dotenv/config';
 import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
@@ -20,10 +21,10 @@ const userSchema = new Schema({
   password: String,
 });
 
-// Way 2 - Encryption in the field of "password"
-const secret = "Thisisthesecretthatcannotbeletout";
+// Way 2 - Encryption in the field of "password" & use environment variables
+console.log(process.env.API_TEST_KEY);
 
-userSchema.plugin(encrypt, { secret, encryptedFields: ["password"] });
+userSchema.plugin(encrypt, { secret: process.env.SECRET, encryptedFields: ["password"] });
 
 const User = new mongoose.model("User", userSchema);
 
