@@ -2,13 +2,26 @@
 import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
+import mongoose, { Schema } from "mongoose";
 
+/** Configuration */
 const app = express();
 
 app.use(express.static("public"));
-app.set('view engine', 'ejs');  // use to render ejs
+app.set("view engine", "ejs"); // use to render ejs
 app.use(bodyParser.urlencoded({ extended: true }));
 
+/** MongoDB */
+mongoose.connect("mongodb://127.0.0.1:27017/userDB");
+
+const userSchema = new Schema({
+  username: String,
+  password: String,
+});
+
+const User = new mongoose.model("User", userSchema);
+
+/** RESTful Operations */
 app.listen(3000, () => console.log("Server started on port 3000."));
 
 app.get("/", function (req, res) {
@@ -21,4 +34,42 @@ app.get("/login", function (req, res) {
 
 app.get("/register", function (req, res) {
   res.render("register");
+});
+
+app.post("/register", async function (req, res) {
+  const { username, password } = req.body;
+  const newUser = new User({
+    username,
+    password,
+  });
+
+  try {
+    await newUser.save();
+    console.log("Successfully setup the new account");
+    res.render("secrets");
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+async function findUserByName(username) {
+  return await User.findOne({ username });
+}
+
+app.post("/login", async function (req, res) {
+  const { username, password } = req.body;
+
+  const user = await findUserByName(username);
+  console.log(user);
+
+  if (user.length !== 0) {
+    if (user.password === password) {
+      res.render("secrets");
+      console.log("Login Successfully!");
+    } else {
+      console.log("The password does not correct!");
+    }
+  } else {
+    console.log("The username does not exist!");
+  }
 });
