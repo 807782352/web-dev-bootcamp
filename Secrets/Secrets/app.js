@@ -3,6 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
 import mongoose, { Schema } from "mongoose";
+import encrypt from "mongoose-encryption";
 
 /** Configuration */
 const app = express();
@@ -18,6 +19,11 @@ const userSchema = new Schema({
   username: String,
   password: String,
 });
+
+// Way 2 - Encryption in the field of "password"
+const secret = "Thisisthesecretthatcannotbeletout";
+
+userSchema.plugin(encrypt, { secret, encryptedFields: ["password"] });
 
 const User = new mongoose.model("User", userSchema);
 
@@ -36,7 +42,7 @@ app.get("/register", function (req, res) {
   res.render("register");
 });
 
-/** Username and Plain Password only */
+/** Username and  Password only */
 app.post("/register", async function (req, res) {
   const { username, password } = req.body;
   const newUser = new User({
@@ -61,16 +67,13 @@ app.post("/login", async function (req, res) {
   const { username, password } = req.body;
 
   const user = await findUserByName(username);
-  console.log(user);
 
-  if (user.length !== 0) {
-    if (user.password === password) {
-      res.render("secrets");
-      console.log("Login Successfully!");
-    } else {
-      console.log("The password does not correct!");
-    }
-  } else {
+  if (!user || user.length === 0) {
     console.log("The username does not exist!");
+  } else if (user.password === password) {
+    res.render("secrets");
+    console.log("Login Successfully!");
+  } else {
+    console.log("The password does not correct!");
   }
 });
