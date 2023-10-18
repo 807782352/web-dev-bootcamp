@@ -1,10 +1,11 @@
 //jshint esversion:6
-import 'dotenv/config';
+import "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
 import mongoose, { Schema } from "mongoose";
-import encrypt from "mongoose-encryption";
+// import encrypt from "mongoose-encryption";
+import md5 from "md5";
 
 /** Configuration */
 const app = express();
@@ -20,11 +21,6 @@ const userSchema = new Schema({
   username: String,
   password: String,
 });
-
-// Way 2 - Encryption in the field of "password" & use environment variables
-console.log(process.env.API_TEST_KEY);
-
-userSchema.plugin(encrypt, { secret: process.env.SECRET, encryptedFields: ["password"] });
 
 const User = new mongoose.model("User", userSchema);
 
@@ -43,9 +39,10 @@ app.get("/register", function (req, res) {
   res.render("register");
 });
 
-/** Username and  Password only */
+/** Way3 - use Hashing to encrypt password */
 app.post("/register", async function (req, res) {
-  const { username, password } = req.body;
+  const { username } = req.body;
+  const password = md5(req.body.password);
   const newUser = new User({
     username,
     password,
@@ -65,7 +62,8 @@ async function findUserByName(username) {
 }
 
 app.post("/login", async function (req, res) {
-  const { username, password } = req.body;
+  const { username } = req.body;
+  const password = md5(req.body.password);
 
   const user = await findUserByName(username);
 
