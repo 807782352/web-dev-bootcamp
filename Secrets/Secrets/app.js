@@ -5,7 +5,8 @@ import bodyParser from "body-parser";
 import ejs from "ejs";
 import mongoose, { Schema } from "mongoose";
 // import encrypt from "mongoose-encryption";
-import md5 from "md5";
+// import md5 from "md5";
+import bcrypt from "bcrypt";
 
 /** Configuration */
 const app = express();
@@ -39,22 +40,27 @@ app.get("/register", function (req, res) {
   res.render("register");
 });
 
-/** Way3 - use Hashing to encrypt password */
+/** Way4 - use Salting and Hashing to encrypt password */
+const saltRounds = 10;
+
 app.post("/register", async function (req, res) {
   const { username } = req.body;
-  const password = md5(req.body.password);
-  const newUser = new User({
-    username,
-    password,
-  });
+  const plainPassword = req.body.password;
+  bcrypt.hash(plainPassword, saltRounds, async function (err, hash) {
+    // Store hash in your password DB.
+    const newUser = new User({
+      username,
+      password: hash,
+    });
 
-  try {
-    await newUser.save();
-    console.log("Successfully setup the new account");
-    res.render("secrets");
-  } catch (error) {
-    console.error(error);
-  }
+    try {
+      await newUser.save();
+      console.log("Successfully setup the new account");
+      res.render("secrets");
+    } catch (error) {
+      console.error(error);
+    }
+  });
 });
 
 async function findUserByName(username) {
@@ -63,16 +69,20 @@ async function findUserByName(username) {
 
 app.post("/login", async function (req, res) {
   const { username } = req.body;
-  const password = md5(req.body.password);
+  const plainPassword = req.body.password;
 
   const user = await findUserByName(username);
 
   if (!user || user.length === 0) {
     console.log("The username does not exist!");
-  } else if (user.password === password) {
-    res.render("secrets");
-    console.log("Login Successfully!");
   } else {
-    console.log("The password does not correct!");
+    bcrypt.compare(plainPassword, user.password, function (err, result) {
+      if (result) {
+        res.render("secrets");
+        console.log("Login Successfully!");
+      } else {
+        console.log("Password is not correct!");
+      }
+    });
   }
 });
